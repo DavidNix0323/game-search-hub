@@ -180,3 +180,23 @@ input#searchInput {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+/* Mobile-friendly card grid */
+#results {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* On wider screens, adjust to multiple columns */
+@media (min-width: 600px) {
+  #results {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  #results {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
