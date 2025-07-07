@@ -131,7 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  fetch("https://www.gamerpower.com/api/giveaways")
+  fetch("https://corsproxy.io/?https://www.gamerpower.com/api/giveaways")
+
 
     .then((res) => res.json())
     .then((data) => renderGiveaways(data))
