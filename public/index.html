@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Game Search Hub</title>
+  <link rel="stylesheet" href="./JSProject.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="hero">
+    <h1>🎮 Find Your Next Game</h1>
+    <p>Search across platforms and giveaways</p>
+    <input id="searchInput" type="text" placeholder="Search by title, platform, or genre…" />
+  </header>
+
+  <section class="filters">
+    <div class="platform-tabs">
+      <button class="filter-btn active" data-platform="all">All</button>
+      <button class="filter-btn" data-platform="Steam">Steam</button>
+      <button class="filter-btn" data-platform="Epic Games Store">Epic</button>
+      <button class="filter-btn" data-platform="Android">Android</button>
+      <button class="filter-btn" data-platform="iOS">iOS</button>
+    </div>
+
+    <div class="view-controls">
+      <label>
+        <input type="checkbox" id="toggleFavorites" />
+        Show Only Favorites
+      </label>
+      <label>
+        <input type="checkbox" id="toggleCompact" />
+        Compact Mode
+      </label>
+      <label>
+        <input type="checkbox" id="toggleTheme" />
+        Light Theme
+      </label>
+    </div>
+  </section>
+
+  <main id="results" class="results"></main>
+
+  <script src="./JSProject.js"></script>
+</body>
+</html>
