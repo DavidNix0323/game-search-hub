@@ -131,7 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  fetch("/api/giveaways")
+  fetch("https://www.gamerpower.com/api/giveaways")
+
     .then((res) => res.json())
     .then((data) => renderGiveaways(data))
     .catch((err) => {
