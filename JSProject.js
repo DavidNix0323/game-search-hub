@@ -3,13 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleFavorites = document.getElementById("toggleFavorites");
   const toggleCompact = document.getElementById("toggleCompact");
   const toggleTheme = document.getElementById("toggleTheme");
+  const searchInput = document.getElementById("searchInput");
 
   const getFavorites = () =>
     JSON.parse(localStorage.getItem("favorites") || "[]");
   const saveFavorites = (favorites) =>
     localStorage.setItem("favorites", JSON.stringify(favorites));
 
-  // Load saved preferences
   if (localStorage.getItem("compactMode") === "true") {
     toggleCompact.checked = true;
     results.classList.add("compact");
@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("light");
   }
 
-  // Toggle handlers
   toggleCompact.addEventListener("change", (e) => {
     results.classList.toggle("compact", e.target.checked);
     localStorage.setItem("compactMode", e.target.checked);
@@ -70,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     attachFavoriteListeners();
     setupPlatformFilters(data);
+    setupSearchFilter();
   }
 
   function attachFavoriteListeners() {
@@ -131,9 +131,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function setupSearchFilter() {
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+
+      document.querySelectorAll(".giveaway-card").forEach((card) => {
+        const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
+        const platform = card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() || "";
+
+        const matches = title.includes(query) || platform.includes(query);
+        card.style.display = matches ? "" : "none";
+      });
+    });
+  }
+
   fetch("https://corsproxy.io/?https://www.gamerpower.com/api/giveaways")
-
-
     .then((res) => res.json())
     .then((data) => renderGiveaways(data))
     .catch((err) => {
