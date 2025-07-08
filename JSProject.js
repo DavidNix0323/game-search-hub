@@ -48,20 +48,27 @@ document.addEventListener("DOMContentLoaded", () => {
     results.innerHTML = "";
 
     data.forEach((giveaway) => {
-      const isFavorited = favorites.includes(giveaway.id);
+      const isFavorited = favorites.includes(String(giveaway.id));
+
       const card = document.createElement("div");
       card.className = "card giveaway-card";
       card.innerHTML = `
         <div class="card-body">
-          <img src="${giveaway.thumbnail}" alt="${giveaway.title}" class="giveaway-img" />
+          <img src="${giveaway.thumbnail}" alt="${
+        giveaway.title
+      }" class="giveaway-img" />
           <h3>${giveaway.title}</h3>
           <p><strong>Platforms:</strong> ${giveaway.platforms}</p>
           <p><strong>Worth:</strong> ${giveaway.worth}</p>
-          <p class="expires"><strong>Ends:</strong> ${formatDate(giveaway.end_date)}</p>
+          <p class="expires"><strong>Ends:</strong> ${formatDate(
+            giveaway.end_date
+          )}</p>
         </div>
         <div class="card-footer">
           <a href="${giveaway.open_giveaway_url}" target="_blank">Claim Here</a>
-          <button class="fav-btn ${isFavorited ? "favorited" : ""}" data-id="${giveaway.id}">❤</button>
+          <button class="fav-btn ${isFavorited ? "favorited" : ""}" data-id="${
+        giveaway.id
+      }">❤</button>
         </div>
       `;
       results.appendChild(card);
@@ -75,7 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function attachFavoriteListeners() {
     document.querySelectorAll(".fav-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
+        const id = String(btn.dataset.id); // force it to be a string
+
         let favorites = getFavorites();
         if (favorites.includes(id)) {
           favorites = favorites.filter((fav) => fav !== id);
@@ -137,7 +145,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       document.querySelectorAll(".giveaway-card").forEach((card) => {
         const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
-        const platform = card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() || "";
+        const platform =
+          card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() ||
+          "";
 
         const matches = title.includes(query) || platform.includes(query);
         card.style.display = matches ? "" : "none";
@@ -145,11 +155,35 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function showSkeletons(count = 6) {
+    results.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+      const skeleton = document.createElement("div");
+      skeleton.className = "card skeleton-card";
+      skeleton.innerHTML = `
+        <div class="card-body">
+          <div class="skeleton-img"></div>
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+        </div>
+        <div class="card-footer">
+          <div class="skeleton-line small"></div>
+          <div class="skeleton-heart"></div>
+        </div>
+      `;
+      results.appendChild(skeleton);
+    }
+  }
+
+  showSkeletons();
+
   fetch("https://corsproxy.io/?https://www.gamerpower.com/api/giveaways")
     .then((res) => res.json())
     .then((data) => renderGiveaways(data))
     .catch((err) => {
       console.error("Fetch error:", err);
-      results.innerHTML = "<p>Failed to load giveaways. Please try again later.</p>";
+      results.innerHTML =
+        "<p>Failed to load giveaways. Please try again later.</p>";
     });
 });
