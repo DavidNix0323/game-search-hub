@@ -81,9 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function attachFavoriteListeners() {
     document.querySelectorAll(".fav-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const id = String(btn.dataset.id); // force it to be a string
-
+      const toggle = () => {
+        const id = String(btn.dataset.id);
         let favorites = getFavorites();
         if (favorites.includes(id)) {
           favorites = favorites.filter((fav) => fav !== id);
@@ -94,7 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         saveFavorites(favorites);
         if (toggleFavorites.checked) filterFavorites();
-      });
+      };
+
+      btn.addEventListener("click", toggle);
+      btn.addEventListener("touchstart", toggle); // 👈 Add this line
     });
   }
 

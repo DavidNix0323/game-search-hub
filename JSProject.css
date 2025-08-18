@@ -269,6 +269,7 @@ body.light .fav-btn:hover:not(.favorited) {
   color: white;
   transition: color 0.2s ease, transform 0.2s ease;
   line-height: 1;
+  touch-action: manipulation;
 }
 
 .fav-btn:hover:not(.favorited) {
