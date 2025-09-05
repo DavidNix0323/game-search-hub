@@ -54,21 +54,15 @@ document.addEventListener("DOMContentLoaded", () => {
       card.className = "card giveaway-card";
       card.innerHTML = `
         <div class="card-body">
-          <img src="${giveaway.thumbnail}" alt="${
-        giveaway.title
-      }" class="giveaway-img" />
+          <img src="${giveaway.thumbnail}" alt="${giveaway.title}" class="giveaway-img" />
           <h3>${giveaway.title}</h3>
           <p><strong>Platforms:</strong> ${giveaway.platforms}</p>
           <p><strong>Worth:</strong> ${giveaway.worth}</p>
-          <p class="expires"><strong>Ends:</strong> ${formatDate(
-            giveaway.end_date
-          )}</p>
+          <p class="expires"><strong>Ends:</strong> ${formatDate(giveaway.end_date)}</p>
         </div>
         <div class="card-footer">
           <a href="${giveaway.open_giveaway_url}" target="_blank">Claim Here</a>
-          <button class="fav-btn ${isFavorited ? "favorited" : ""}" data-id="${
-        giveaway.id
-      }">❤</button>
+          <button class="fav-btn ${isFavorited ? "favorited" : ""}" data-id="${giveaway.id}">❤</button>
         </div>
       `;
       results.appendChild(card);
@@ -81,22 +75,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function attachFavoriteListeners() {
     document.querySelectorAll(".fav-btn").forEach((btn) => {
-      const toggle = () => {
-        const id = String(btn.dataset.id);
+      // Remove existing listeners by cloning
+      const newBtn = btn.cloneNode(true);
+      btn.replaceWith(newBtn);
+
+      newBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const id = String(newBtn.dataset.id);
         let favorites = getFavorites();
+
         if (favorites.includes(id)) {
           favorites = favorites.filter((fav) => fav !== id);
-          btn.classList.remove("favorited");
+          newBtn.classList.remove("favorited");
         } else {
           favorites.push(id);
-          btn.classList.add("favorited");
+          newBtn.classList.add("favorited");
         }
-        saveFavorites(favorites);
-        if (toggleFavorites.checked) filterFavorites();
-      };
 
-      btn.addEventListener("click", toggle);
-      btn.addEventListener("touchstart", toggle); // 👈 Add this line
+        saveFavorites(favorites);
+
+        if (toggleFavorites.checked) filterFavorites();
+      });
     });
   }
 
@@ -131,8 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".giveaway-card").forEach((card) => {
           const platformText = card
             .querySelector("p:nth-of-type(1)")
-            .innerHTML.toLowerCase()
-            .replace(/<[^>]*>/g, "");
+            .textContent.toLowerCase();
 
           const matches = platform === "all" || platformText.includes(platform);
           card.style.display = matches ? "" : "none";
@@ -147,9 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       document.querySelectorAll(".giveaway-card").forEach((card) => {
         const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
-        const platform =
-          card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() ||
-          "";
+        const platform = card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() || "";
 
         const matches = title.includes(query) || platform.includes(query);
         card.style.display = matches ? "" : "none";
@@ -185,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => renderGiveaways(data))
     .catch((err) => {
       console.error("Fetch error:", err);
-      results.innerHTML =
-        "<p>Failed to load giveaways. Please try again later.</p>";
+      results.innerHTML = "<p>Failed to load giveaways. Please try again later.</p>";
     });
 });
