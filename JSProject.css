@@ -373,7 +373,6 @@ body.light .fav-btn:hover:not(.favorited) {
   }
 }
 
-
 /* Small devices (phones, less than 600px) */
 @media (max-width: 599px) {
   .filters,
@@ -381,6 +380,15 @@ body.light .fav-btn:hover:not(.favorited) {
   .view-controls {
     flex-direction: column;
     align-items: stretch;
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+  }
+
+  .filter-btn,
+  .view-controls label {
+    width: 100%;
+    text-align: center;
   }
 
   .results {
@@ -397,6 +405,32 @@ body.light .fav-btn:hover:not(.favorited) {
   input#searchInput {
     width: 100%;
   }
+
+  /* Hero emoji adjustments */
+  .hero .emoji {
+    left: -1rem;
+    top: 0rem;
+    font-size: 3rem;
+  }
+
+  /* Card footer adjustments for mobile */
+  .card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .fav-btn {
+    font-size: 2rem;
+    margin-left: 0;
+    padding: 0.25rem 0;
+    align-self: flex-start;
+  }
+
+  .card-footer a {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /* Medium devices (tablets, 600px to 899px) */
@@ -412,10 +446,30 @@ body.light .fav-btn:hover:not(.favorited) {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    width: auto;
+    padding: 0;
   }
 
   .card {
     min-height: 320px;
+  }
+
+  .card-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .fav-btn {
+    font-size: 2.25rem;
+    margin-left: 1rem;
+    padding: 0;
+  }
+
+  .card-footer a {
+    width: auto;
+    text-align: center;
   }
 }
 
@@ -430,14 +484,22 @@ body.light .fav-btn:hover:not(.favorited) {
   .card {
     min-height: 340px;
   }
-}
 
-/* Mobile*/
-/* Adjustments for smaller screens */
-@media (max-width: 599px) {
-  .hero .emoji {
-    left: -1rem; /* pull it closer to the heading */
-    top: 0rem; /* optional: adjust vertical alignment */
-    font-size: 3rem; /* slightly smaller for mobile */
+  .card-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .fav-btn {
+    font-size: 2.25rem;
+    margin-left: 1rem;
+    padding: 0;
+  }
+
+  .card-footer a {
+    width: auto;
+    text-align: center;
   }
 }

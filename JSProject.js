@@ -81,9 +81,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function attachFavoriteListeners() {
     document.querySelectorAll(".fav-btn").forEach((btn) => {
-      const toggle = () => {
+      const toggle = (e) => {
+        e.preventDefault();
         const id = String(btn.dataset.id);
         let favorites = getFavorites();
+  
         if (favorites.includes(id)) {
           favorites = favorites.filter((fav) => fav !== id);
           btn.classList.remove("favorited");
@@ -91,15 +93,18 @@ document.addEventListener("DOMContentLoaded", () => {
           favorites.push(id);
           btn.classList.add("favorited");
         }
+  
         saveFavorites(favorites);
+  
+        // If "Show Favorites Only" is enabled, refresh the filter
         if (toggleFavorites.checked) filterFavorites();
       };
-
-      btn.addEventListener("click", toggle);
-      btn.addEventListener("touchstart", toggle); // 👈 Add this line
+  
+      // ✅ Works for mouse + touch
+      btn.addEventListener("pointerup", toggle, { passive: false });
     });
   }
-
+  
   function filterFavorites() {
     const favorites = getFavorites();
     document.querySelectorAll(".giveaway-card").forEach((card) => {
@@ -107,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.display = favorites.includes(id) ? "" : "none";
     });
   }
-
+  
   toggleFavorites.addEventListener("change", (e) => {
     if (e.target.checked) {
       filterFavorites();
@@ -117,46 +122,45 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
-
+  
   function setupPlatformFilters(data) {
     const buttons = document.querySelectorAll(".filter-btn");
-
+  
     buttons.forEach((btn) => {
       btn.addEventListener("click", () => {
         buttons.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-
+  
         const platform = btn.textContent.trim().toLowerCase();
-
+  
         document.querySelectorAll(".giveaway-card").forEach((card) => {
           const platformText = card
             .querySelector("p:nth-of-type(1)")
             .innerHTML.toLowerCase()
             .replace(/<[^>]*>/g, "");
-
+  
           const matches = platform === "all" || platformText.includes(platform);
           card.style.display = matches ? "" : "none";
         });
       });
     });
   }
-
+  
   function setupSearchFilter() {
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.toLowerCase();
-
+  
       document.querySelectorAll(".giveaway-card").forEach((card) => {
         const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
         const platform =
-          card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() ||
-          "";
-
+          card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() || "";
+  
         const matches = title.includes(query) || platform.includes(query);
         card.style.display = matches ? "" : "none";
       });
     });
   }
-
+  
   function showSkeletons(count = 6) {
     results.innerHTML = "";
     for (let i = 0; i < count; i++) {
@@ -177,9 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
       results.appendChild(skeleton);
     }
   }
-
+  
   showSkeletons();
-
+  
   fetch("https://corsproxy.io/?https://www.gamerpower.com/api/giveaways")
     .then((res) => res.json())
     .then((data) => renderGiveaways(data))
@@ -188,4 +192,5 @@ document.addEventListener("DOMContentLoaded", () => {
       results.innerHTML =
         "<p>Failed to load giveaways. Please try again later.</p>";
     });
+  
 });
