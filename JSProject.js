@@ -54,21 +54,15 @@ document.addEventListener("DOMContentLoaded", () => {
       card.className = "card giveaway-card";
       card.innerHTML = `
         <div class="card-body">
-          <img src="${giveaway.thumbnail}" alt="${
-        giveaway.title
-      }" class="giveaway-img" />
+          <img src="${giveaway.thumbnail}" alt="${giveaway.title}" class="giveaway-img" />
           <h3>${giveaway.title}</h3>
           <p><strong>Platforms:</strong> ${giveaway.platforms}</p>
           <p><strong>Worth:</strong> ${giveaway.worth}</p>
-          <p class="expires"><strong>Ends:</strong> ${formatDate(
-            giveaway.end_date
-          )}</p>
+          <p class="expires"><strong>Ends:</strong> ${formatDate(giveaway.end_date)}</p>
         </div>
         <div class="card-footer">
           <a href="${giveaway.open_giveaway_url}" target="_blank">Claim Here</a>
-          <button class="fav-btn ${isFavorited ? "favorited" : ""}" data-id="${
-        giveaway.id
-      }">❤</button>
+          <button class="fav-btn ${isFavorited ? "favorited" : ""}" data-id="${giveaway.id}">❤</button>
         </div>
       `;
       results.appendChild(card);
@@ -81,30 +75,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function attachFavoriteListeners() {
     document.querySelectorAll(".fav-btn").forEach((btn) => {
-      const toggle = (e) => {
+      // Remove existing listeners by cloning
+      const newBtn = btn.cloneNode(true);
+      btn.replaceWith(newBtn);
+
+      newBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        const id = String(btn.dataset.id);
+        const id = String(newBtn.dataset.id);
         let favorites = getFavorites();
-  
+
         if (favorites.includes(id)) {
           favorites = favorites.filter((fav) => fav !== id);
-          btn.classList.remove("favorited");
+          newBtn.classList.remove("favorited");
         } else {
           favorites.push(id);
-          btn.classList.add("favorited");
+          newBtn.classList.add("favorited");
         }
-  
+
         saveFavorites(favorites);
-  
-        // If "Show Favorites Only" is enabled, refresh the filter
+
         if (toggleFavorites.checked) filterFavorites();
-      };
-  
-      // ✅ Works for mouse + touch
-      btn.addEventListener("pointerup", toggle, { passive: false });
+      });
     });
   }
-  
+
   function filterFavorites() {
     const favorites = getFavorites();
     document.querySelectorAll(".giveaway-card").forEach((card) => {
@@ -112,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.display = favorites.includes(id) ? "" : "none";
     });
   }
-  
+
   toggleFavorites.addEventListener("change", (e) => {
     if (e.target.checked) {
       filterFavorites();
@@ -122,45 +116,43 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
-  
+
   function setupPlatformFilters(data) {
     const buttons = document.querySelectorAll(".filter-btn");
-  
+
     buttons.forEach((btn) => {
       btn.addEventListener("click", () => {
         buttons.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-  
+
         const platform = btn.textContent.trim().toLowerCase();
-  
+
         document.querySelectorAll(".giveaway-card").forEach((card) => {
           const platformText = card
             .querySelector("p:nth-of-type(1)")
-            .innerHTML.toLowerCase()
-            .replace(/<[^>]*>/g, "");
-  
+            .textContent.toLowerCase();
+
           const matches = platform === "all" || platformText.includes(platform);
           card.style.display = matches ? "" : "none";
         });
       });
     });
   }
-  
+
   function setupSearchFilter() {
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.toLowerCase();
-  
+
       document.querySelectorAll(".giveaway-card").forEach((card) => {
         const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
-        const platform =
-          card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() || "";
-  
+        const platform = card.querySelector("p:nth-of-type(1)")?.textContent.toLowerCase() || "";
+
         const matches = title.includes(query) || platform.includes(query);
         card.style.display = matches ? "" : "none";
       });
     });
   }
-  
+
   function showSkeletons(count = 6) {
     results.innerHTML = "";
     for (let i = 0; i < count; i++) {
@@ -181,16 +173,14 @@ document.addEventListener("DOMContentLoaded", () => {
       results.appendChild(skeleton);
     }
   }
-  
+
   showSkeletons();
-  
+
   fetch("https://corsproxy.io/?https://www.gamerpower.com/api/giveaways")
     .then((res) => res.json())
     .then((data) => renderGiveaways(data))
     .catch((err) => {
       console.error("Fetch error:", err);
-      results.innerHTML =
-        "<p>Failed to load giveaways. Please try again later.</p>";
+      results.innerHTML = "<p>Failed to load giveaways. Please try again later.</p>";
     });
-  
 });
